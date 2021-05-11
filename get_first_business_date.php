@@ -56,7 +56,7 @@ function getFirstBusinessDate($queueDate)
 // echo 'getFirstBusinessDate: ' . '$wday: ' . $wday . '<br>';
 
 /**
-* Tests with following done:
+ * Tests with following done:
 dayofweek=8,9
 date=2022-01-01 to 2022-01-05
 date=2021-12-27, current_timestamp=2021-05-02 09:40:00
@@ -65,12 +65,12 @@ date=2022-02-01, current_timestamp=strtotime('+1 minutes')
 date=2021-07-01,2021-07-02,2021-08-01,2021-08-02, current_timestamp=strtotime('+1 minutes')
 date=2021-05-01 to 2021-05-04, current_timestamp=2021-05-02
 date=2021-06-01, send_at = '09:00:00', current_timestamp='2021-06-01 10:00:00','2021-06-01 08:00:00'
-*/
- // date=2021-05-01 to 2021-05-04, current_timestamp=2021-05-02
-$dayofweek = 8;
+ */
+// date=2021-05-01 to 2021-05-04, current_timestamp=2021-05-02
+$dayofweek = 9;
 $send_at = '09:00:00';
 $send_at = !empty($send_at) ? $send_at : '04:00:00';
-$start_date = '2021-05-04';
+$start_date = '2021-05-01';
 $init_date = !empty($start_date) ? strtotime("$start_date $send_at") : time();
 
 //do not send exactly on day change, we could have some double sending because server time differences.
@@ -89,9 +89,9 @@ echo 'date(Y-m-d H:i:s, $current_timestamp): ' . date('Y-m-d H:i:s', $current_ti
 
 echo '$init_date < $current_timestamp: ' . ($init_date < $current_timestamp) . '<br>';
 if (!$init_date || ($init_date && $init_date < $current_timestamp)) {
-echo 'Line 7' . '<br>';
+    echo 'Line 7' . '<br>';
     $init_date = $current_timestamp;
-    
+
     /*$queueDate = date('Y-m-d', strtotime("first day of next month"));
     if ($dayofweek == 8) {
         echo 'Line 5' . '<br>';
@@ -105,32 +105,32 @@ echo 'Line 7' . '<br>';
     }*/
 } /*else {*/
 
-    if ($dayofweek == 8) {
-        // First day of the month
+if ($dayofweek == 8) {
+    // First day of the month
 
 // begin temp1
-        if (date('j', $init_date) === '1' && $init_date > $current_timestamp
-        ) {
-            echo 'Line: 1' . '<br>';
-            $startDate = date('Y-m-d', $init_date);
-        } else {
-            echo 'Line: 2' . '<br>';
-            $startDate = (date('n', $init_date) == 12) ? (date('Y', $init_date) + 1) . '-01-01' : date('Y', $init_date) . '-' . str_repeat('0', 2 - strlen(date('n', $init_date) + 1)) . (date('n', $init_date) + 1) . '-01';
-        }
+    if (date('j', $init_date) === '1' && $init_date > $current_timestamp
+    ) {
+        echo 'Line: 1' . '<br>';
+        $startDate = date('Y-m-d', $init_date);
+    } else {
+        echo 'Line: 2' . '<br>';
+        $startDate = (date('n', $init_date) == 12) ? (date('Y', $init_date) + 1) . '-01-01' : date('Y', $init_date) . '-' . str_repeat('0', 2 - strlen(date('n', $init_date) + 1)) . (date('n', $init_date) + 1) . '-01';
+    }
 // end temp1
 
-        $queued_at = "{$startDate} {$send_at}";
-    } else {
-        // first business day of the month
+    $queued_at = "{$startDate} {$send_at}";
+} else {
+    // first business day of the month
 
 // begin temp1
 
-$wday = getFirstBusinessDate(date('Y-m',$init_date) . '-01');
-echo '2-getFirstBusinessDate: ' . '$wday: ' . $wday . '<br>';
+    $wday = getFirstBusinessDate(date('Y-m',$init_date) . '-01');
+    echo '2-getFirstBusinessDate: ' . '$wday: ' . $wday . '<br>';
 
 // INCORRECT when input 2022-01-04 then output 2022-01-04:    echo 'getFirstBusinessDate(date(Y-m-d, $init_date)): ' . getFirstBusinessDate(date('Y-m-d', $init_date)) . '<br>';
 
-echo '2-getFirstBusinessDate(date(Y-m,strtotime($init_date)) . -01): ' . getFirstBusinessDate(date('Y-m',$init_date) . '-01') . '<br>';
+    echo '2-getFirstBusinessDate(date(Y-m,strtotime($init_date)) . -01): ' . getFirstBusinessDate(date('Y-m',$init_date) . '-01') . '<br>';
 
     echo 'date(j, $init_date): ' . date('j', $init_date) . '<br>';
     echo 'date(Y, $init_date): ' . date('Y', $init_date) . '<br>';
@@ -140,27 +140,27 @@ echo '2-getFirstBusinessDate(date(Y-m,strtotime($init_date)) . -01): ' . getFirs
 
 // CORRECT:    echo '2-date(j,get_first_day(1,date(m, $init_date),date(Y, $init_date))): ' . date('j',get_first_day(1,date('m', $init_date),date('Y', $init_date))) . '<br>';
 
-        echo '2-getFirstBusinessDay(date(m,strtotime($init_date)),date(Y,strtotime($init_date))): ' . getFirstBusinessDay(date('m', $init_date), date('Y', $init_date)) . '<br>';
+    echo '2-getFirstBusinessDay(date(m,strtotime($init_date)),date(Y,strtotime($init_date))): ' . getFirstBusinessDay(date('m', $init_date), date('Y', $init_date)) . '<br>';
 
 //    if (date('j', $init_date) <= date('j',get_first_day(1,date('m', $init_date),date('Y', $init_date)))) {
 
-echo '$init_date > $current_timestamp: ' . ($init_date > $current_timestamp) . '<br>';
-echo 'date($init_date) > date($current_timestamp): ' . (date('Y-m-d H:i:s',$init_date) > date('Y-m-d H:i:s',$current_timestamp)) . '<br>';
-echo '$current_timestamp < $init_date: ' . ($current_timestamp < $init_date) . '<br>';
+    echo '$init_date > $current_timestamp: ' . ($init_date > $current_timestamp) . '<br>';
+    echo 'date($init_date) > date($current_timestamp): ' . (date('Y-m-d H:i:s',$init_date) > date('Y-m-d H:i:s',$current_timestamp)) . '<br>';
+    echo '$current_timestamp < $init_date: ' . ($current_timestamp < $init_date) . '<br>';
 
 // CORRECT Temp Comment:        if (date('j', $init_date) <= getFirstBusinessDay(date('m', $init_date), date('Y', $init_date)) && $init_date > $current_timestamp) {
 
-        if (date('Y-m-d',$init_date) <= date('Y-m-d',strtotime(getFirstBusinessDate(date('Y-m',$init_date) . '-01')))
-          && strtotime(getFirstBusinessDate(date('Y-m',$init_date) . '-01') . date('H:i:s',$init_date)) > $current_timestamp
-        
-        ) {
+    if (date('Y-m-d',$init_date) <= date('Y-m-d',strtotime(getFirstBusinessDate(date('Y-m',$init_date) . '-01')))
+        && strtotime(getFirstBusinessDate(date('Y-m',$init_date) . '-01') . date('H:i:s',$init_date)) > $current_timestamp
 
-            echo 'Line: 3' . '<br>';
-            $startDate = date('Y-m-d', $init_date);
-        } else {
-            echo 'Line: 4' . '<br>';
-            $startDate = (date('n', $init_date) == 12) ? (date('Y', $init_date) + 1) . '-01-01' : date('Y', $init_date) . '-' . str_repeat('0', 2 - strlen(date('n', $init_date) + 1)) . (date('n', $init_date) + 1) . '-01';
-        }
+    ) {
+
+        echo 'Line: 3' . '<br>';
+        $startDate = date('Y-m-d', $init_date);
+    } else {
+        echo 'Line: 4' . '<br>';
+        $startDate = (date('n', $init_date) == 12) ? (date('Y', $init_date) + 1) . '-01-01' : date('Y', $init_date) . '-' . str_repeat('0', 2 - strlen(date('n', $init_date) + 1)) . (date('n', $init_date) + 1) . '-01';
+    }
 // end temp1
 
 
@@ -174,12 +174,12 @@ echo '$current_timestamp < $init_date: ' . ($current_timestamp < $init_date) . '
 
 // INCORRECT: echo '4-date(Y-m-d, strtotime(2021-01-01 first weekday)): ' . date('Y-m-d', strtotime('2021-01-01 first weekday')) . '<br>';
 
-        $queued_at = getFirstBusinessDate($startDate) . " {$send_at}";
+    $queued_at = getFirstBusinessDate($startDate) . " {$send_at}";
 // CORRECT Temp Comment:        echo '5-$queued_at: ' . $queued_at . '<br>';
 
 // CORRECT Temp Comment:        $queued_at = date('Y-m-', strtotime($startDate)) . str_repeat('0', 2 - strlen(getFirstBusinessDay(date('m', strtotime($startDate)), date('Y', strtotime($startDate))))) . getFirstBusinessDay(date('m', strtotime($startDate)), date('Y', strtotime($startDate))) . " {$send_at}";
 // CORRECT Temp Comment:        echo '6-$queued_at: ' . $queued_at . '<br>';
-    }
+}
 //}
 
 echo '$startDate: ' . $startDate . '<br>';
