@@ -173,6 +173,9 @@ if ($dayofweek == 8) {
 // INCORRECT when 2022-01-02:  echo '3-date(Y-m-d,get_first_day(date(j, $startDate),date(m, $startDate),date(Y, $startDate))): ' . date('Y-m-d',get_first_day(date('j', strtotime($startDate)),date('m', strtotime($startDate)),date('Y', strtotime($startDate)))) . '<br>';
 
 // INCORRECT: echo '4-date(Y-m-d, strtotime(2021-01-01 first weekday)): ' . date('Y-m-d', strtotime('2021-01-01 first weekday')) . '<br>';
+// echo '4-date(Y-m-d, strtotime(2021-01-01 first weekday)): ' . date('Y-m-d', strtotime('2021-01-01 first weekday')) . '<br>';
+// echo '5-date(Y-m-d, strtotime(2021-01-00 first weekday)): ' . date('Y-m-d', strtotime('2021-01-00 first weekday')) . '<br>';
+// echo '6-date(Y-m-d, strtotime(2021-05-00 first weekday)): ' . date('Y-m-d', strtotime('2021-05-00 first weekday')) . '<br>';    
 
     $queued_at = getFirstBusinessDate($startDate) . " {$send_at}";
 // CORRECT Temp Comment:        echo '5-$queued_at: ' . $queued_at . '<br>';
